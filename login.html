@@ -1,399 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SPLITWI$E - Sign In / Create Account</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In - SPLITWI$E</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #0a1f2e;
-      color: #fff;
-      overflow-y: auto;
-    }
-
-    .background {
-      position: fixed;
-      inset: 0;
-      background-image: url('https://thumbs.dreamstime.com/b/dark-street-map-13222168.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      filter: blur(8px) brightness(0.65) contrast(1.15);
-      z-index: -2;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 31, 46, 0.55);
-      z-index: -1;
-    }
-
-    .header {
-      text-align: center;
-      padding: 60px 20px 40px;
-      width: 100%;
-      max-width: 600px;
-      z-index: 10;
-    }
-
-    h1 {
-      font-size: 5rem;
-      font-weight: bold;
-      color: #20c0c0;
-      text-shadow: 3px 3px 10px rgba(0,0,0,0.6);
-      letter-spacing: 3px;
-      margin-bottom: 10px;
-    }
-
-    .motto {
-      font-size: 1.8rem;
-      color: #e0f7f7;
-      font-weight: 500;
-      margin-bottom: 40px;
-    }
-
-    .avatars-container {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .avatar {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      border: 5px solid rgba(255,255,255,0.2);
-      animation: float 7s ease-in-out infinite;
-    }
-
-    .av1 { top: 12%; left: 8%; background-image: url('https://thumbs.dreamstime.com/b/friendly-smiling-people-avatar-icon-set-clean-round-line-art-style-diverse-young-faces-modern-social-media-profiles-web-431022927.jpg'); animation-delay: 0s; }
-    .av2 { top: 10%; right: 10%; background-image: url('https://thumbs.dreamstime.com/b/people-avatar-flat-icons-vector-illustration-included-icon-as-man-female-head-muslim-senior-adult-young-human-people-avatar-180766407.jpg'); animation-delay: 1.5s; }
-    .av3 { top: 38%; left: 12%; background-image: url('https://thumbs.dreamstime.com/b/friendly-smiling-people-avatar-icon-set-clean-round-line-art-style-diverse-young-faces-modern-social-media-profiles-web-431022927.jpg'); animation-delay: 3s; }
-    .av4 { bottom: 35%; right: 8%; background-image: url('https://thumbs.dreamstime.com/b/people-avatar-flat-icons-vector-illustration-included-icon-as-man-female-head-muslim-senior-adult-young-human-people-avatar-180766407.jpg'); animation-delay: 4.5s; }
-    .av5 { top: 68%; right: 10%; background-image: url('https://thumbs.dreamstime.com/b/friendly-smiling-people-avatar-icon-set-clean-round-line-art-style-diverse-young-faces-modern-social-media-profiles-web-431022927.jpg'); animation-delay: 6s; }
-    .av6 { bottom: 22%; left: 18%; background-image: url('https://thumbs.dreamstime.com/b/people-avatar-flat-icons-vector-illustration-included-icon-as-man-female-head-muslim-senior-adult-young-human-people-avatar-180766407.jpg'); animation-delay: 7.5s; }
-
-    .avatar::after {
-      content: "🛒";
-      position: absolute;
-      bottom: -16px;
-      right: -16px;
-      font-size: 2.4rem;
-      background: #20c0c0;
-      color: white;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      border: 4px solid white;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-25px); }
-    }
-
-    .auth-box {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 50px 40px;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      width: 90%;
-      max-width: 440px;
-      text-align: center;
-      z-index: 10;
-      margin: 20px 0;
-    }
-
-    h2 {
-      color: #20c0c0;
-      margin-bottom: 30px;
-      font-size: 2.4rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 18px;
-      margin: 15px 0;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-radius: 12px;
-      font-size: 1.1rem;
-      background: rgba(255,255,255,0.08);
-      color: white;
-      outline: none;
-      transition: border 0.3s;
-    }
-
-    input::placeholder {
-      color: rgba(255,255,255,0.6);
-    }
-
-    input:focus {
-      border-color: #20c0c0;
-      box-shadow: 0 0 0 3px rgba(32,192,192,0.2);
-    }
-
-    button {
-      width: 100%;
-      padding: 18px;
-      margin: 15px 0;
-      font-size: 1.3rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .signin {
-      background: #20c0c0;
-      color: white;
-    }
-
-    .create {
-      background: #555;
-      color: white;
-    }
-
-    button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .back-link {
-      margin-top: 20px;
-      color: #20c0c0;
-      text-decoration: none;
-      font-size: 1.1rem;
-    }
-
-    .back-link:hover {
-      text-decoration: underline;
-    }
-
-    .message {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 1rem;
-      display: none;
-    }
-
-    .message.error {
-      background: rgba(255, 67, 67, 0.2);
-      color: #ff6b6b;
-      border: 1px solid #ff6b6b;
-      display: block;
-    }
-
-    .message.success {
-      background: rgba(76, 175, 80, 0.2);
-      color: #90EE90;
-      border: 1px solid #90EE90;
-      display: block;
-    }
-
-    @media (max-width: 768px) {
-      h1 { font-size: 4rem; }
-      .auth-box { padding: 40px 25px; }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; background: #ffffff; color: #202124; }
+    
+    .page-wrapper { position: relative; min-height: 100vh; }
+    
+    .map-watermark { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    #map-container { width: 100%; height: 100%; filter: grayscale(85%) brightness(1.15) opacity(0.25); }
+    
+    .content { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    
+    .login-wrapper { width: 100%; max-width: 480px; }
+    
+    .login-card { background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(32, 33, 36, 0.12), 0 12px 24px rgba(32, 33, 36, 0.18); padding: 60px 48px; border: 1px solid rgba(32, 33, 36, 0.06); }
+    
+    .header { text-align: center; margin-bottom: 40px; }
+    
+    .logo { font-size: 32px; font-weight: 700; color: #20c0c0; margin-bottom: 16px; letter-spacing: 1px; }
+    
+    .motto { font-size: 14px; color: #20c0c0; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; }
+    
+    h1 { font-size: 28px; font-weight: 400; color: #202124; margin-bottom: 12px; }
+    
+    .subtitle { font-size: 13px; color: #5f6368; margin-bottom: 32px; }
+    
+    .form-section { margin-bottom: 24px; }
+    
+    .form-group { margin-bottom: 20px; }
+    
+    label { display: block; font-size: 13px; color: #5f6368; margin-bottom: 8px; font-weight: 500; }
+    
+    .required { color: #d32f2f; }
+    
+    input { width: 100%; padding: 11px 12px; border: 1px solid #dadce0; border-radius: 4px; font-size: 14px; transition: all 0.15s; background: #ffffff; font-family: inherit; }
+    
+    input::placeholder { color: #9aa0a6; }
+    
+    input:focus { outline: none; border-color: #20c0c0; box-shadow: inset 0 0 0 1px rgba(32, 192, 192, 0.4); background: #f0fffe; }
+    
+    .form-help { font-size: 12px; color: #5f6368; margin-top: 6px; }
+    
+    .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    
+    .checkbox-group input { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; accent-color: #20c0c0; }
+    
+    .checkbox-group label { margin: 0; font-size: 13px; color: #202124; font-weight: 400; cursor: pointer; }
+    
+    .forgot-password { text-align: right; margin-bottom: 20px; }
+    
+    .forgot-password a { font-size: 13px; color: #1a73e8; text-decoration: none; font-weight: 600; }
+    
+    .forgot-password a:hover { text-decoration: underline; }
+    
+    .btn-signin { width: 100%; background: #20c0c0; color: white; border: none; padding: 11px 24px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; margin-bottom: 16px; }
+    
+    .btn-signin:hover { background: #18a8a8; box-shadow: 0 2px 6px rgba(32, 192, 192, 0.25); }
+    
+    .divider { text-align: center; margin: 24px 0; position: relative; }
+    
+    .divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e8eaed; }
+    
+    .divider span { background: white; padding: 0 12px; position: relative; font-size: 12px; color: #5f6368; font-weight: 500; }
+    
+    .signup-prompt { text-align: center; font-size: 13px; color: #5f6368; margin-bottom: 20px; }
+    
+    .signup-prompt a { color: #1a73e8; text-decoration: none; font-weight: 600; }
+    
+    .signup-prompt a:hover { text-decoration: underline; }
+    
+    .actions { display: flex; gap: 12px; margin-bottom: 24px; }
+    
+    .btn-back { flex: 1; background: transparent; color: #1a73e8; border: 1px solid #dadce0; padding: 11px 24px; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    
+    .btn-back:hover { background: #f8f9fa; border-color: #dadce0; }
+    
+    .security-info { background: #f0f7f7; border: 1px solid #d4e9e9; border-radius: 6px; padding: 12px; margin-top: 20px; font-size: 12px; color: #1a9999; display: flex; align-items: flex-start; gap: 8px; }
+    
+    .security-info i { font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+    
+    .modal { display: none; position: fixed; inset: 0; background: rgba(32, 33, 36, 0.55); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    
+    .modal.active { display: flex; }
+    
+    .modal-content { background: white; border-radius: 12px; padding: 48px 40px; max-width: 400px; width: 100%; box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14); text-align: center; }
+    
+    .success-icon { font-size: 64px; color: #388e3c; margin-bottom: 24px; }
+    
+    .modal-content h2 { font-size: 28px; color: #202124; margin-bottom: 12px; font-weight: 400; }
+    
+    .modal-content p { font-size: 14px; color: #5f6368; margin-bottom: 32px; line-height: 1.6; }
+    
+    .modal .btn-signin { margin-bottom: 0; }
+    
+    @media (max-width: 600px) { .login-card { padding: 40px 28px; } .logo { font-size: 28px; } h1 { font-size: 22px; } .actions { flex-direction: column; } .btn-back { width: 100%; } }
   </style>
 </head>
 <body>
-  <!-- Supabase JavaScript client library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <div class="page-wrapper">
+    <div class="map-watermark">
+      <div id="map-container"></div>
+    </div>
+    
+    <div class="content">
+      <div class="login-wrapper">
+        <div class="login-card">
+          <div class="header">
+            <div class="logo">SPLITWI$E</div>
+            <div class="motto">Shop Together, Save Together</div>
+            <h1>Welcome back</h1>
+            <p class="subtitle">Sign in to your account to continue shopping</p>
+          </div>
+          
+          <form id="loginForm">
+            <div class="form-section">
+              <div class="form-group">
+                <label>Email or username <span class="required">*</span></label>
+                <input type="text" id="emailOrUsername" placeholder="Enter your email or username" required>
+              </div>
+              
+              <div class="form-group">
+                <label>Phone number <span class="required">*</span></label>
+                <input type="tel" id="phone" placeholder="+234 (80) 1234-5678" required>
+                <div class="form-help">For two-factor authentication verification</div>
+              </div>
+              
+              <div class="form-group">
+                <label>Password <span class="required">*</span></label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+              </div>
+            </div>
+            
+            <div class="checkbox-group">
+              <input type="checkbox" id="rememberMe">
+              <label for="rememberMe">Remember me</label>
+            </div>
+            
+            <div class="forgot-password">
+              <a href="forgot-password.html">Forgot your password?</a>
+            </div>
+            
+            <button type="submit" class="btn-signin">Sign in</button>
+            
+            <div class="divider">
+              <span>OR</span>
+            </div>
+            
+            <p class="signup-prompt">Don't have an account? <a href="sign-up.html">Create one now</a></p>
+            
+            <div class="actions">
+              <button type="button" class="btn-back" onclick="window.location.href='index.html'">Back to Home</button>
+            </div>
+            
+            <div class="security-info">
+              <i class="fas fa-shield-alt"></i>
+              <span>Your account is protected with bank-level security and two-factor authentication</span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
   
-  <!-- Your configuration and auth files -->
-  <script src="supabase-config.js"></script>
-  <script src="auth.js"></script>
-  <script src="location.js"></script>
-
-  <div class="background"></div>
-  <div class="overlay"></div>
-
-  <div class="header">
-    <h1>SPLITWI$E</h1>
-    <p class="motto">Shop Together, Save Together</p>
-  </div>
-
-  <div class="avatars-container">
-    <div class="avatar av1"></div>
-    <div class="avatar av2"></div>
-    <div class="avatar av3"></div>
-    <div class="avatar av4"></div>
-    <div class="avatar av5"></div>
-    <div class="avatar av6"></div>
-  </div>
-
-  <div class="auth-box">
-    <div id="signin-form" style="display: block;">
-      <h2>Welcome Back!</h2>
-      <input type="email" id="signin-email" placeholder="Your email address" required>
-      <input type="password" id="signin-password" placeholder="Password" required>
-      <button class="signin" id="signin-btn">Sign In</button>
-      <p style="margin-top: 20px; color: #e0f7f7;">Don't have an account? <button class="create" id="toggle-signup-btn" style="background: none; padding: 0; color: #20c0c0; font-size: 1rem; cursor: pointer; text-decoration: underline;">Create one</button></p>
-      <a href="index.html" class="back-link">← Back to Home</a>
-      <div id="signin-message" class="message"></div>
-    </div>
-
-    <div id="signup-form" style="display: none;">
-      <h2>Create Account</h2>
-      <input type="text" id="signup-fullname" placeholder="Full Name" required>
-      <input type="email" id="signup-email" placeholder="Email address" required>
-      <input type="password" id="signup-password" placeholder="Password (min 8 characters)" required>
-      <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
-      <button class="create" id="signup-btn">Create Account</button>
-      <p style="margin-top: 20px; color: #e0f7f7;">Already have an account? <button class="signin" id="toggle-signin-btn" style="background: none; padding: 0; color: #20c0c0; font-size: 1rem; cursor: pointer; text-decoration: underline;">Sign In</button></p>
-      <a href="index.html" class="back-link">← Back to Home</a>
-      <div id="signup-message" class="message"></div>
+  <div class="modal" id="successModal">
+    <div class="modal-content">
+      <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+      <h2>Welcome back!</h2>
+      <p>You have successfully signed in to your SPLITWI$E account. Redirecting to your dashboard...</p>
+      <button class="btn-signin" onclick="window.location.href='dashboard.html'">Go to Dashboard</button>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
-    // DOM Elements
-    const signinForm = document.getElementById('signin-form');
-    const signupForm = document.getElementById('signup-form');
-    const toggleSignupBtn = document.getElementById('toggle-signup-btn');
-    const toggleSigninBtn = document.getElementById('toggle-signin-btn');
-    const signinBtn = document.getElementById('signin-btn');
-    const signupBtn = document.getElementById('signup-btn');
-    const signinEmail = document.getElementById('signin-email');
-    const signinPassword = document.getElementById('signin-password');
-    const signupFullname = document.getElementById('signup-fullname');
-    const signupEmail = document.getElementById('signup-email');
-    const signupPassword = document.getElementById('signup-password');
-    const signupConfirmPassword = document.getElementById('signup-confirm-password');
-    const signinMessage = document.getElementById('signin-message');
-    const signupMessage = document.getElementById('signup-message');
-
-    // Toggle between Sign In and Sign Up
-    toggleSignupBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      signinForm.style.display = 'none';
-      signupForm.style.display = 'block';
-    });
-
-    toggleSigninBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      signupForm.style.display = 'none';
-      signinForm.style.display = 'block';
-    });
-
-    // Sign In Button Handler
-    signinBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      
-      const email = signinEmail.value.trim();
-      const password = signinPassword.value.trim();
-
-      if (!email || !password) {
-        signinMessage.textContent = 'Please enter email and password';
-        signinMessage.className = 'message error';
-        return;
-      }
-
-      signinBtn.disabled = true;
-      signinBtn.textContent = 'Signing in...';
-
-      const result = await signIn(email, password);
-      
-      if (result.success) {
-        signinMessage.textContent = 'Signed in successfully! Requesting location...';
-        signinMessage.className = 'message success';
-        
-        // Request location and then redirect
-        const locationResult = await updateUserLocation();
-        
-        setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 1500);
-      } else {
-        signinMessage.textContent = `Error: ${result.error}`;
-        signinMessage.className = 'message error';
-        signinBtn.disabled = false;
-        signinBtn.textContent = 'Sign In';
-      }
-    });
-
-    // Sign Up Button Handler
-    signupBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      
-      const fullname = signupFullname.value.trim();
-      const email = signupEmail.value.trim();
-      const password = signupPassword.value.trim();
-      const confirmPassword = signupConfirmPassword.value.trim();
-
-      if (!fullname || !email || !password || !confirmPassword) {
-        signupMessage.textContent = 'Please fill in all fields';
-        signupMessage.className = 'message error';
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        signupMessage.textContent = 'Passwords do not match';
-        signupMessage.className = 'message error';
-        return;
-      }
-
-      if (password.length < 8) {
-        signupMessage.textContent = 'Password must be at least 8 characters';
-        signupMessage.className = 'message error';
-        return;
-      }
-
-      signupBtn.disabled = true;
-      signupBtn.textContent = 'Creating account...';
-
-      const result = await signUp(email, password, fullname);
-      
-      if (result.success) {
-        signupMessage.textContent = result.message;
-        signupMessage.className = 'message success';
-        
-        setTimeout(() => {
-          signupForm.style.display = 'none';
-          signinForm.style.display = 'block';
-          signupEmail.value = '';
-          signupPassword.value = '';
-          signupConfirmPassword.value = '';
-          signupFullname.value = '';
-        }, 2000);
-      } else {
-        signupMessage.textContent = `Error: ${result.error}`;
-        signupMessage.className = 'message error';
-        signupBtn.disabled = false;
-        signupBtn.textContent = 'Create Account';
-      }
-    });
+    const map = L.map('map-container', { center: [6.5244, 3.3792], zoom: 13, zoomControl: false, attributionControl: false, scrollWheelZoom: false, dragging: false, touchZoom: false, doubleClickZoom: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 22, maxNativeZoom: 19 }).addTo(map);
+    const users = [ { lat: 6.5244, lng: 3.3792, emoji: '👨‍🦰' }, { lat: 6.5280, lng: 3.3850, emoji: '👩‍🦱' }, { lat: 6.5200, lng: 3.3700, emoji: '👨‍💼' }, { lat: 6.5300, lng: 3.3900, emoji: '👩‍💻' } ];
+    users.forEach(u => { const html = `<div style="font-size: 1.6rem; background: white; border: 2px solid #20c0c0; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(32,192,192,0.25);">${u.emoji}</div>`; L.marker([u.lat, u.lng], { icon: L.divIcon({ html, iconSize: [44, 44] }) }).addTo(map); });
+    document.getElementById('loginForm').addEventListener('submit', function(e) { e.preventDefault(); const emailOrUsername = document.getElementById('emailOrUsername').value; const phone = document.getElementById('phone').value; const password = document.getElementById('password').value; const rememberMe = document.getElementById('rememberMe').checked; if(!emailOrUsername) { alert('Please enter your email or username'); return; } if(!phone) { alert('Please enter your phone number'); return; } if(!password) { alert('Please enter your password'); return; } if(rememberMe) { localStorage.setItem('rememberMe', 'true'); localStorage.setItem('savedEmail', emailOrUsername); } else { localStorage.removeItem('rememberMe'); localStorage.removeItem('savedEmail'); } document.getElementById('successModal').classList.add('active'); setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000); });
+    window.addEventListener('load', function() { if(localStorage.getItem('rememberMe') === 'true') { const savedEmail = localStorage.getItem('savedEmail'); if(savedEmail) { document.getElementById('emailOrUsername').value = savedEmail; document.getElementById('rememberMe').checked = true; } } });
   </script>
 </body>
 </html>
