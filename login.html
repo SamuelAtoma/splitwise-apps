@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPLITWI$E - Sign In / Create Account</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #0a1f2e;
+      color: #fff;
+      overflow-y: auto;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      background-image: url('https://thumbs.dreamstime.com/b/dark-street-map-13222168.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(8px) brightness(0.65) contrast(1.15);
+      z-index: -2;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 31, 46, 0.55);
+      z-index: -1;
+    }
+
+    .header {
+      text-align: center;
+      padding: 60px 20px 40px;
+      width: 100%;
+      max-width: 600px;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 5rem;
+      font-weight: bold;
+      color: #20c0c0;
+      text-shadow: 3px 3px 10px rgba(0,0,0,0.6);
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+    }
+
+    .motto {
+      font-size: 1.8rem;
+      color: #e0f7f7;
+      font-weight: 500;
+      margin-bottom: 40px;
+    }
+
+    .avatars-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .avatar {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      border: 5px solid rgba(255,255,255,0.2);
+      animation: float 7s ease-in-out infinite;
+    }
+
+    .av1 { top: 12%; left: 8%; background-image: url('https://thumbs.dreamstime.com/b/friendly-smiling-people-avatar-icon-set-clean-round-line-art-style-diverse-young-faces-modern-social-media-profiles-web-431022927.jpg'); animation-delay: 0s; }
+    .av2 { top: 10%; right: 10%; background-image: url('https://thumbs.dreamstime.com/b/people-avatar-flat-icons-vector-illustration-included-icon-as-man-female-head-muslim-senior-adult-young-human-people-avatar-180766407.jpg'); animation-delay: 1.5s; }
+    .av3 { top: 38%; left: 12%; background-image: url('https://thumbs.dreamstime.com/b/friendly-smiling-people-avatar-icon-set-clean-round-line-art-style-diverse-young-faces-modern-social-media-profiles-web-431022927.jpg'); animation-delay: 3s; }
+    .av4 { bottom: 35%; right: 8%; background-image: url('https://thumbs.dreamstime.com/b/people-avatar-flat-icons-vector-illustration-included-icon-as-man-female-head-muslim-senior-adult-young-human-people-avatar-180766407.jpg'); animation-delay: 4.5s; }
+    .av5 { top: 68%; right: 10%; background-image: url('https://thumbs.dreamstime.com/b/friendly-smiling-people-avatar-icon-set-clean-round-line-art-style-diverse-young-faces-modern-social-media-profiles-web-431022927.jpg'); animation-delay: 6s; }
+    .av6 { bottom: 22%; left: 18%; background-image: url('https://thumbs.dreamstime.com/b/people-avatar-flat-icons-vector-illustration-included-icon-as-man-female-head-muslim-senior-adult-young-human-people-avatar-180766407.jpg'); animation-delay: 7.5s; }
+
+    .avatar::after {
+      content: "🛒";
+      position: absolute;
+      bottom: -16px;
+      right: -16px;
+      font-size: 2.4rem;
+      background: #20c0c0;
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border: 4px solid white;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-25px); }
+    }
+
+    .auth-box {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 50px 40px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      width: 90%;
+      max-width: 440px;
+      text-align: center;
+      z-index: 10;
+      margin: 20px 0;
+    }
+
+    h2 {
+      color: #20c0c0;
+      margin-bottom: 30px;
+      font-size: 2.4rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 18px;
+      margin: 15px 0;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.08);
+      color: white;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    input:focus {
+      border-color: #20c0c0;
+      box-shadow: 0 0 0 3px rgba(32,192,192,0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 18px;
+      margin: 15px 0;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .signin {
+      background: #20c0c0;
+      color: white;
+    }
+
+    .create {
+      background: #555;
+      color: white;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .back-link {
+      margin-top: 20px;
+      color: #20c0c0;
+      text-decoration: none;
+      font-size: 1.1rem;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 1rem;
+      display: none;
+    }
+
+    .message.error {
+      background: rgba(255, 67, 67, 0.2);
+      color: #ff6b6b;
+      border: 1px solid #ff6b6b;
+      display: block;
+    }
+
+    .message.success {
+      background: rgba(76, 175, 80, 0.2);
+      color: #90EE90;
+      border: 1px solid #90EE90;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 4rem; }
+      .auth-box { padding: 40px 25px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Supabase JavaScript client library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Your configuration and auth files -->
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="location.js"></script>
+
+  <div class="background"></div>
+  <div class="overlay"></div>
+
+  <div class="header">
+    <h1>SPLITWI$E</h1>
+    <p class="motto">Shop Together, Save Together</p>
+  </div>
+
+  <div class="avatars-container">
+    <div class="avatar av1"></div>
+    <div class="avatar av2"></div>
+    <div class="avatar av3"></div>
+    <div class="avatar av4"></div>
+    <div class="avatar av5"></div>
+    <div class="avatar av6"></div>
+  </div>
+
+  <div class="auth-box">
+    <div id="signin-form" style="display: block;">
+      <h2>Welcome Back!</h2>
+      <input type="email" id="signin-email" placeholder="Your email address" required>
+      <input type="password" id="signin-password" placeholder="Password" required>
+      <button class="signin" id="signin-btn">Sign In</button>
+      <p style="margin-top: 20px; color: #e0f7f7;">Don't have an account? <button class="create" id="toggle-signup-btn" style="background: none; padding: 0; color: #20c0c0; font-size: 1rem; cursor: pointer; text-decoration: underline;">Create one</button></p>
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <div id="signin-message" class="message"></div>
+    </div>
+
+    <div id="signup-form" style="display: none;">
+      <h2>Create Account</h2>
+      <input type="text" id="signup-fullname" placeholder="Full Name" required>
+      <input type="email" id="signup-email" placeholder="Email address" required>
+      <input type="password" id="signup-password" placeholder="Password (min 8 characters)" required>
+      <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required>
+      <button class="create" id="signup-btn">Create Account</button>
+      <p style="margin-top: 20px; color: #e0f7f7;">Already have an account? <button class="signin" id="toggle-signin-btn" style="background: none; padding: 0; color: #20c0c0; font-size: 1rem; cursor: pointer; text-decoration: underline;">Sign In</button></p>
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <div id="signup-message" class="message"></div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const signinForm = document.getElementById('signin-form');
+    const signupForm = document.getElementById('signup-form');
+    const toggleSignupBtn = document.getElementById('toggle-signup-btn');
+    const toggleSigninBtn = document.getElementById('toggle-signin-btn');
+    const signinBtn = document.getElementById('signin-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const signinEmail = document.getElementById('signin-email');
+    const signinPassword = document.getElementById('signin-password');
+    const signupFullname = document.getElementById('signup-fullname');
+    const signupEmail = document.getElementById('signup-email');
+    const signupPassword = document.getElementById('signup-password');
+    const signupConfirmPassword = document.getElementById('signup-confirm-password');
+    const signinMessage = document.getElementById('signin-message');
+    const signupMessage = document.getElementById('signup-message');
+
+    // Toggle between Sign In and Sign Up
+    toggleSignupBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signinForm.style.display = 'none';
+      signupForm.style.display = 'block';
+    });
+
+    toggleSigninBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signupForm.style.display = 'none';
+      signinForm.style.display = 'block';
+    });
+
+    // Sign In Button Handler
+    signinBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      const email = signinEmail.value.trim();
+      const password = signinPassword.value.trim();
+
+      if (!email || !password) {
+        signinMessage.textContent = 'Please enter email and password';
+        signinMessage.className = 'message error';
+        return;
+      }
+
+      signinBtn.disabled = true;
+      signinBtn.textContent = 'Signing in...';
+
+      const result = await signIn(email, password);
+      
+      if (result.success) {
+        signinMessage.textContent = 'Signed in successfully! Requesting location...';
+        signinMessage.className = 'message success';
+        
+        // Request location and then redirect
+        const locationResult = await updateUserLocation();
+        
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1500);
+      } else {
+        signinMessage.textContent = `Error: ${result.error}`;
+        signinMessage.className = 'message error';
+        signinBtn.disabled = false;
+        signinBtn.textContent = 'Sign In';
+      }
+    });
+
+    // Sign Up Button Handler
+    signupBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      
+      const fullname = signupFullname.value.trim();
+      const email = signupEmail.value.trim();
+      const password = signupPassword.value.trim();
+      const confirmPassword = signupConfirmPassword.value.trim();
+
+      if (!fullname || !email || !password || !confirmPassword) {
+        signupMessage.textContent = 'Please fill in all fields';
+        signupMessage.className = 'message error';
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        signupMessage.textContent = 'Passwords do not match';
+        signupMessage.className = 'message error';
+        return;
+      }
+
+      if (password.length < 8) {
+        signupMessage.textContent = 'Password must be at least 8 characters';
+        signupMessage.className = 'message error';
+        return;
+      }
+
+      signupBtn.disabled = true;
+      signupBtn.textContent = 'Creating account...';
+
+      const result = await signUp(email, password, fullname);
+      
+      if (result.success) {
+        signupMessage.textContent = result.message;
+        signupMessage.className = 'message success';
+        
+        setTimeout(() => {
+          signupForm.style.display = 'none';
+          signinForm.style.display = 'block';
+          signupEmail.value = '';
+          signupPassword.value = '';
+          signupConfirmPassword.value = '';
+          signupFullname.value = '';
+        }, 2000);
+      } else {
+        signupMessage.textContent = `Error: ${result.error}`;
+        signupMessage.className = 'message error';
+        signupBtn.disabled = false;
+        signupBtn.textContent = 'Create Account';
+      }
+    });
+  </script>
+</body>
+</html>
