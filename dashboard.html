@@ -3,452 +3,215 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SPLITWI$E - Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Dashboard - SPLITWI$E</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: #0a1f2e;
-      color: #e0f7f7;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .background {
-      position: fixed;
-      inset: 0;
-      background-image: url('https://thumbs.dreamstime.com/b/dark-street-map-13222168.jpg');
-      background-size: cover;
-      background-position: center;
-      filter: blur(8px) brightness(0.65) contrast(1.15);
-      z-index: -2;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 31, 46, 0.58);
-      z-index: -1;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      background: rgba(10, 31, 46, 0.92);
-      backdrop-filter: blur(10px);
-      padding: 1.2rem 5%;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(32, 192, 192, 0.12);
-    }
-
-    .logo {
-      font-size: 1.9rem;
-      font-weight: 700;
-      color: #20c0c0;
-      letter-spacing: 1px;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .user-details {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .username {
-      font-weight: 600;
-      color: #e0f7f7;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-
-    .username:hover {
-      color: #20c0c0;
-    }
-
-    .user-email {
-      color: #a0d0d0;
-      font-size: 0.8rem;
-    }
-
-    .avatar-small {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: #20c0c0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      color: white;
-      font-size: 1.1rem;
-      border: 2px solid rgba(255,255,255,0.25);
-      cursor: pointer;
-    }
-
-    .avatar-small:hover {
-      box-shadow: 0 0 20px rgba(32,192,192,0.5);
-    }
-
-    .logout-btn {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #e0f7f7;
-      padding: 0.6rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.25s;
-      font-weight: 600;
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.95rem;
-    }
-
-    .logout-btn:hover {
-      background: rgba(255,80,80,0.18);
-      border-color: rgba(255,80,80,0.4);
-      color: #ffcccc;
-    }
-
-    main {
-      padding: 2.5rem 5% 4rem 5%;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 2.8rem;
-      color: #20c0c0;
-      margin-bottom: 0.6rem;
-      font-weight: 700;
-    }
-
-    .welcome-sub {
-      font-size: 1.15rem;
-      color: #a0d0d0;
-      margin-bottom: 2.5rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .stat-card {
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(32,192,192,0.18);
-      border-radius: 16px;
-      padding: 1.8rem;
-      transition: transform 0.25s, box-shadow 0.25s;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 16px 40px rgba(32,192,192,0.15);
-    }
-
-    .stat-value {
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: #20c0c0;
-      margin: 0.4rem 0;
-    }
-
-    .stat-label {
-      color: #b0e0e0;
-      font-size: 0.95rem;
-    }
-
-    .panel {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 1.8rem;
-      margin-bottom: 2rem;
-    }
-
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.4rem;
-    }
-
-    .panel-title {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #20c0c0;
-    }
-
-    .btn {
-      background: #20c0c0;
-      color: white;
-      border: none;
-      padding: 0.7rem 1.4rem;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.25s;
-      font-family: 'Poppins', sans-serif;
-      font-size: 0.95rem;
-    }
-
-    .btn:hover {
-      background: #18a8a8;
-      transform: translateY(-1px);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .empty-state-text {
-      color: #a0d0d0;
-      margin-bottom: 1.5rem;
-    }
-
-    .floating-actions {
-      position: fixed;
-      top: 50%;
-      right: 1.5rem;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      z-index: 90;
-    }
-
-    .fab {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #20c0c0;
-      color: white;
-      font-size: 1.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 20px rgba(32,192,192,0.35);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      position: relative;
-      border: none;
-    }
-
-    .fab:hover {
-      transform: scale(1.15) translateX(-4px);
-      box-shadow: 0 12px 32px rgba(32,192,192,0.5);
-    }
-
-    .fab-label {
-      position: absolute;
-      right: 80px;
-      background: rgba(10,31,46,0.9);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-
-    .fab:hover .fab-label {
-      opacity: 1;
-      right: 78px;
-    }
-
-    @media (max-width: 900px) {
-      .floating-actions {
-        right: 1rem;
-        top: auto;
-        bottom: 5.5rem;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 0.9rem;
-      }
-
-      .fab {
-        width: 56px;
-        height: 56px;
-        font-size: 1.4rem;
-      }
-
-      .fab-label {
-        display: none;
-      }
-
-      .user-details {
-        display: none;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #202124; }
+    
+    .page-wrapper { position: relative; min-height: 100vh; }
+    .map-watermark { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    #map-container { width: 100%; height: 100%; filter: grayscale(100%) brightness(1.1) opacity(0.08); }
+    .watermark-text { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 200px; font-weight: 900; color: rgba(32, 192, 192, 0.05); z-index: 1; white-space: nowrap; letter-spacing: 15px; pointer-events: none; }
+    .container { position: relative; z-index: 2; min-height: 100vh; }
+    
+    header { background: white; padding: 20px 40px; border-bottom: 1px solid #e8eaed; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(32, 33, 36, 0.08); }
+    .header-left { display: flex; align-items: center; gap: 40px; }
+    .logo { font-size: 26px; font-weight: 700; color: #20c0c0; letter-spacing: 0.5px; }
+    nav { display: flex; gap: 30px; }
+    nav a { color: #5f6368; text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    nav a:hover { color: #20c0c0; }
+    
+    .header-right { display: flex; align-items: center; gap: 24px; }
+    .user-profile { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: #e8eaed; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .user-info p { font-size: 13px; }
+    .user-info p:first-child { font-weight: 600; color: #202124; }
+    .user-info p:last-child { color: #5f6368; }
+    .btn-logout { background: white; color: #20c0c0; border: 1px solid #20c0c0; padding: 9px 18px; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; font-family: inherit; }
+    .btn-logout:hover { background: #20c0c0; color: white; }
+    
+    .main-content { padding: 40px; max-width: 1400px; margin: 0 auto; }
+    .welcome-section { margin-bottom: 32px; }
+    .welcome-section h1 { font-size: 32px; font-weight: 400; margin-bottom: 8px; color: #202124; }
+    .welcome-section p { color: #5f6368; font-size: 14px; }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: white; border: 1px solid #e8eaed; border-radius: 8px; padding: 20px; transition: all 0.2s; }
+    .stat-card:hover { border-color: #dadce0; box-shadow: 0 1px 3px rgba(32, 33, 36, 0.08); }
+    .stat-icon { font-size: 24px; color: #20c0c0; margin-bottom: 12px; }
+    .stat-label { font-size: 11px; color: #5f6368; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; font-weight: 600; }
+    .stat-value { font-size: 28px; font-weight: 500; color: #202124; margin-bottom: 4px; }
+    .stat-change { font-size: 12px; color: #1e8e3e; }
+    
+    .charts-section { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .chart-card { background: white; border: 1px solid #e8eaed; border-radius: 8px; padding: 24px; }
+    .chart-title { font-size: 16px; font-weight: 500; margin-bottom: 20px; color: #202124; }
+    .chart-placeholder { width: 100%; height: 240px; background: #f5f7fa; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #5f6368; font-size: 14px; }
+    
+    .activity-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .activity-card { background: white; border: 1px solid #e8eaed; border-radius: 8px; padding: 24px; }
+    .activity-list { list-style: none; }
+    .activity-item { padding: 16px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-info { flex: 1; }
+    .activity-name { font-weight: 500; font-size: 14px; margin-bottom: 4px; color: #202124; }
+    .activity-time { font-size: 12px; color: #5f6368; }
+    .activity-amount { font-size: 15px; font-weight: 600; color: #20c0c0; }
+    
+    .action-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 32px; }
+    .action-btn { background: #20c0c0; color: white; border: none; padding: 14px 20px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
+    .action-btn:hover { background: #18a8a8; box-shadow: 0 2px 8px rgba(32, 192, 192, 0.2); }
+    .action-btn i { font-size: 16px; }
+    
+    .groups-title { font-size: 16px; font-weight: 500; margin-bottom: 16px; color: #202124; margin-top: 24px; }
+    .groups-section { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .group-card { background: white; border: 1px solid #e8eaed; border-radius: 8px; padding: 20px; text-align: center; transition: all 0.2s; cursor: pointer; }
+    .group-card:hover { border-color: #20c0c0; box-shadow: 0 2px 8px rgba(32, 192, 192, 0.15); }
+    .group-avatar { width: 56px; height: 56px; background: #f0f7f7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px; }
+    .group-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #202124; }
+    .group-members { font-size: 12px; color: #5f6368; }
+    
+    .chatbot-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: #20c0c0; border: none; border-radius: 50%; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(32, 192, 192, 0.3); transition: all 0.3s; z-index: 999; }
+    .chatbot-btn:hover { background: #18a8a8; transform: scale(1.1); }
+    
+    @media (max-width: 1024px) { .charts-section { grid-template-columns: 1fr; } .activity-section { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { header { padding: 16px 20px; flex-direction: column; gap: 16px; } .header-left { width: 100%; flex-direction: column; gap: 16px; } nav { width: 100%; } .main-content { padding: 20px; } .welcome-section h1 { font-size: 24px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } .charts-section { margin-bottom: 80px; } .action-buttons { position: fixed; bottom: 0; left: 0; right: 0; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 0; padding: 12px; background: white; border-top: 1px solid #e8eaed; z-index: 50; } .action-btn { padding: 12px 16px; font-size: 12px; } .groups-section { grid-template-columns: repeat(2, 1fr); } .watermark-text { font-size: 100px; } .chatbot-btn { bottom: 80px; right: 20px; width: 56px; height: 56px; } }
   </style>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
-  <script src="auth.js"></script>
-  <script src="location.js"></script>
-
-  <div class="background"></div>
-  <div class="overlay"></div>
-
-  <header>
-    <div class="logo">SPLITWI$E</div>
-    <div class="user-info">
-      <div class="avatar-small" id="avatar" onclick="window.location.href='profile.html'"></div>
-      <div class="user-details">
-        <div class="username" id="username" onclick="window.location.href='profile.html'">Loading...</div>
-        <div class="user-email" id="useremail">user@example.com</div>
-      </div>
-      <button class="logout-btn" id="logout-btn">Sign Out</button>
-    </div>
-  </header>
-
-  <main>
-    <h1>Welcome back, <span id="first-name">User</span>!</h1>
-    <p class="welcome-sub">Here's what's happening with your groups today</p>
-
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-label">You are owed</div>
-        <div class="stat-value" id="owed" style="color: #34d399;">₦ 0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">You owe</div>
-        <div class="stat-value" id="owing" style="color: #f87171;">₦ 0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Total groups</div>
-        <div class="stat-value" id="total-groups">0</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">This month saved</div>
-        <div class="stat-value" id="saved" style="color: #34d399;">₦ 0</div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-header">
-        <h2 class="panel-title">Your Groups</h2>
-        <button class="btn" onclick="window.location.href='create-pool.html'">+ New Group</button>
-      </div>
-      <div id="groups-container">
-        <div class="empty-state">
-          <div class="empty-state-icon">🛒</div>
-          <div class="empty-state-text">No groups yet. Create your first group to get started!</div>
-          <button class="btn" onclick="window.location.href='create-pool.html'">Create Group</button>
+  <div class="page-wrapper">
+    <div class="map-watermark"><div id="map-container"></div></div>
+    <div class="watermark-text">SPLITWI$E</div>
+    
+    <div class="container">
+      <header>
+        <div class="header-left">
+          <div class="logo">SPLITWI$E</div>
+          <nav>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#groups">Groups</a>
+            <a href="#history">History</a>
+            <a href="#markets">Markets</a>
+          </nav>
+        </div>
+        <div class="header-right">
+          <div class="user-profile">
+            <div class="avatar">👤</div>
+            <div class="user-info">
+              <p>Samuel Atoma</p>
+              <p>Premium Member</p>
+            </div>
+          </div>
+          <button class="btn-logout" onclick="logout()">Sign Out</button>
+        </div>
+      </header>
+      
+      <div class="main-content">
+        <div class="welcome-section">
+          <h1>Welcome back, Samuel</h1>
+          <p>Track your shopping groups, split costs, and save money together</p>
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+            <div class="stat-label">Total Saved</div>
+            <div class="stat-value">₦45,230</div>
+            <div class="stat-change">↑ 12.5% this month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-label">Active Groups</div>
+            <div class="stat-value">8</div>
+            <div class="stat-change">2 new this week</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="stat-label">Orders This Month</div>
+            <div class="stat-value">24</div>
+            <div class="stat-change">↑ 8 vs last month</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="stat-label">Markets Joined</div>
+            <div class="stat-value">12</div>
+            <div class="stat-change">Port Harcourt Active</div>
+          </div>
+        </div>
+        
+        <div class="charts-section">
+          <div class="chart-card">
+            <div class="chart-title">Monthly Savings Trend</div>
+            <div class="chart-placeholder"><canvas id="savingsChart" width="400" height="200"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Spending by Market</div>
+            <div style="padding: 20px 0;">
+              <div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;"><span style="font-size: 13px; color: #202124;">Jumia</span><span style="font-size: 13px; font-weight: 600; color: #202124;">35%</span></div><div style="width: 100%; height: 6px; background: #f0f0f0; border-radius: 3px;"><div style="width: 35%; height: 100%; background: #20c0c0;"></div></div></div>
+              <div style="margin-bottom: 16px;"><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;"><span style="font-size: 13px; color: #202124;">Konga</span><span style="font-size: 13px; font-weight: 600; color: #202124;">28%</span></div><div style="width: 100%; height: 6px; background: #f0f0f0; border-radius: 3px;"><div style="width: 28%; height: 100%; background: #1a9999;"></div></div></div>
+              <div><div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;"><span style="font-size: 13px; color: #202124;">Amazon</span><span style="font-size: 13px; font-weight: 600; color: #202124;">37%</span></div><div style="width: 100%; height: 6px; background: #f0f0f0; border-radius: 3px;"><div style="width: 37%; height: 100%; background: #157b7b;"></div></div></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="action-btn" onclick="createGroup()"><i class="fas fa-plus"></i> Create Group</button>
+          <button class="action-btn" onclick="findNearby()"><i class="fas fa-location-dot"></i> Find Nearby</button>
+          <button class="action-btn" onclick="startShopping()"><i class="fas fa-shopping-bag"></i> Start Shopping</button>
+          <button class="action-btn" onclick="viewMarkets()"><i class="fas fa-store"></i> Browse Markets</button>
+        </div>
+        
+        <div class="activity-section">
+          <div class="activity-card">
+            <div class="chart-title">Recent Activity</div>
+            <ul class="activity-list">
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Jumia Shopping Group</div><div class="activity-time">Today at 2:30 PM</div></div><div class="activity-amount">+₦2,450</div></li>
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Konga Electronics</div><div class="activity-time">Yesterday at 6:15 PM</div></div><div class="activity-amount">+₦5,680</div></li>
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Amazon Fashion</div><div class="activity-time">2 days ago</div></div><div class="activity-amount">+₦3,120</div></li>
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Payment Received</div><div class="activity-time">3 days ago</div></div><div class="activity-amount">-₦1,890</div></li>
+            </ul>
+          </div>
+          <div class="activity-card">
+            <div class="chart-title">Your Groups</div>
+            <ul class="activity-list">
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Morning Market Squad</div><div class="activity-time">7 members • Active</div></div><div style="font-size: 18px;">👥</div></li>
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Electronics Hunters</div><div class="activity-time">5 members • Active</div></div><div style="font-size: 18px;">💻</div></li>
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Fashion Forward</div><div class="activity-time">4 members • Active</div></div><div style="font-size: 18px;">👗</div></li>
+              <li class="activity-item"><div class="activity-info"><div class="activity-name">Sunday Shoppers</div><div class="activity-time">6 members • Inactive</div></div><div style="font-size: 18px;">🛍️</div></li>
+            </ul>
+          </div>
+        </div>
+        
+        <h2 class="groups-title">Recommended Groups Near You</h2>
+        <div class="groups-section">
+          <div class="group-card" onclick="joinGroup('Jumia Lagos')"><div class="group-avatar">🛒</div><div class="group-name">Jumia Lagos</div><div class="group-members">12 members</div></div>
+          <div class="group-card" onclick="joinGroup('Konga Port Harcourt')"><div class="group-avatar">🛍️</div><div class="group-name">Konga PH</div><div class="group-members">9 members</div></div>
+          <div class="group-card" onclick="joinGroup('Amazon Electronics')"><div class="group-avatar">📦</div><div class="group-name">Amazon Tech</div><div class="group-members">8 members</div></div>
+          <div class="group-card" onclick="joinGroup('Fashion Hub')"><div class="group-avatar">👗</div><div class="group-name">Fashion Hub</div><div class="group-members">11 members</div></div>
         </div>
       </div>
     </div>
-  </main>
-
-  <div class="floating-actions">
-    <a href="groups.html" class="fab" title="View Groups">
-      👥
-      <span class="fab-label">View Groups</span>
-    </a>
-    <a href="create-pool.html" class="fab" title="Create Pool">
-      ➕
-      <span class="fab-label">Create Pool</span>
-    </a>
-    <a href="make-payment.html" class="fab" title="Make Payment">
-      ₦
-      <span class="fab-label">Make Payment</span>
-    </a>
-    <a href="live-map.html" class="fab" title="Live Map">
-      🗺️
-      <span class="fab-label">Live Map</span>
-    </a>
-    <a href="profile.html" class="fab" title="Profile">
-      ⚙️
-      <span class="fab-label">Profile</span>
-    </a>
   </div>
 
+  <button class="chatbot-btn" onclick="openChatbot()" title="AI Shopping Assistant"><i class="fas fa-comments"></i></button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script>
-    async function checkUserLoggedIn() {
-      const user = await window.checkAuth();
-      if (!user) {
-        window.location.href = 'login.html';
-        return null;
-      }
-      return user;
-    }
-
-    async function loadDashboard() {
-      const user = await checkUserLoggedIn();
-      if (!user) return;
-
-      try {
-        const { data: profile, error: profileError } = await window.supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (profileError) {
-          console.error('Error fetching profile:', profileError);
-          return;
-        }
-
-        const fullName = profile.full_name || 'User';
-        const firstName = fullName.split(' ')[0];
-        const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-
-        document.getElementById('avatar').textContent = initials || 'U';
-        document.getElementById('username').textContent = fullName;
-        document.getElementById('useremail').textContent = profile.email;
-        document.getElementById('first-name').textContent = firstName;
-
-      } catch (error) {
-        console.error('Error loading dashboard:', error);
-      }
-    }
-
-    document.getElementById('logout-btn').addEventListener('click', async () => {
-      const result = await window.signOut();
-      if (result.success) {
-        window.location.href = 'login.html';
-      }
-    });
-
-    window.addEventListener('load', loadDashboard);
+    const map = L.map('map-container', { center: [6.5244, 3.3792], zoom: 13, zoomControl: false, attributionControl: false, scrollWheelZoom: false, dragging: false, touchZoom: false, doubleClickZoom: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 22, maxNativeZoom: 19 }).addTo(map);
+    const users = [ { lat: 6.5244, lng: 3.3792, emoji: '👨‍🦰' }, { lat: 6.5280, lng: 3.3850, emoji: '👩‍🦱' }, { lat: 6.5200, lng: 3.3700, emoji: '👨‍💼' }, { lat: 6.5300, lng: 3.3900, emoji: '👩‍💻' }, { lat: 6.5150, lng: 3.3650, emoji: '👨‍🎓' } ];
+    users.forEach(u => { const html = `<div style="font-size: 1.4rem; background: white; border: 2px solid #20c0c0; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(32,192,192,0.2);">${u.emoji}</div>`; L.marker([u.lat, u.lng], { icon: L.divIcon({ html, iconSize: [42, 42] }) }).addTo(map); });
+    function createGroup() { alert('Opening Create Group dialog'); }
+    function findNearby() { alert('Finding nearby shoppers in your area'); }
+    function startShopping() { alert('Starting shopping session'); }
+    function viewMarkets() { alert('Browsing available markets'); }
+    function joinGroup(name) { alert('Joined ' + name); }
+    function openChatbot() { alert('Opening AI Shopping Assistant chatbot'); }
+    function logout() { if(confirm('Sign out?')) { window.location.href = 'login.html'; } }
+    window.addEventListener('load', function() { const canvas = document.getElementById('savingsChart'); if(canvas) { const ctx = canvas.getContext('2d'); ctx.strokeStyle = '#20c0c0'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 150); ctx.lineTo(50, 120); ctx.lineTo(100, 100); ctx.lineTo(150, 70); ctx.lineTo(200, 80); ctx.lineTo(250, 50); ctx.lineTo(300, 40); ctx.lineTo(350, 30); ctx.lineTo(400, 20); ctx.stroke(); } });
   </script>
 </body>
 </html>
