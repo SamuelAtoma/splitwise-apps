@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account - SPLITWI$E</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; background: #fafafa; color: #202124; }
+    
+    .page-wrapper { position: relative; min-height: 100vh; background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,247,247,0.95) 100%); }
+    
+    .map-watermark { position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    #map-container { width: 100%; height: 100%; filter: grayscale(100%) brightness(1.1); }
+    
+    .content { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    
+    .signup-wrapper { width: 100%; max-width: 520px; }
+    
+    .signup-card { 
+      background: #ffffff; 
+      border-radius: 12px; 
+      box-shadow: 0 2px 8px rgba(32, 33, 36, 0.12), 0 12px 24px rgba(32, 33, 36, 0.18); 
+      padding: 60px 48px;
+      border: 1px solid rgba(32, 33, 36, 0.06);
+    }
+    
+    .header { text-align: center; margin-bottom: 40px; }
+    
+    .logo { 
+      font-size: 32px; 
+      font-weight: 700; 
+      color: #20c0c0; 
+      margin-bottom: 16px;
+      letter-spacing: 1px;
+    }
+    
+    .tagline {
+      font-size: 18px;
+      font-weight: 600;
+      color: #202124;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+    
+    .motto {
+      font-size: 14px;
+      color: #20c0c0;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    h1 { 
+      font-size: 28px; 
+      font-weight: 400; 
+      color: #202124; 
+      margin-bottom: 12px;
+      margin-top: 20px;
+    }
+    
+    .subtitle { 
+      font-size: 13px; 
+      color: #5f6368;
+      margin-bottom: 32px;
+    }
+    
+    .form-section { margin-bottom: 28px; }
+    
+    .section-title { 
+      font-size: 12px; 
+      color: #5f6368; 
+      margin-bottom: 16px; 
+      font-weight: 600; 
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-row { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 16px;
+    }
+    
+    .form-group { 
+      margin-bottom: 18px;
+    }
+    
+    label { 
+      display: block; 
+      font-size: 13px; 
+      color: #5f6368; 
+      margin-bottom: 8px; 
+      font-weight: 500;
+    }
+    
+    .required { 
+      color: #d32f2f; 
+    }
+    
+    input, select { 
+      width: 100%; 
+      padding: 11px 12px; 
+      border: 1px solid #dadce0; 
+      border-radius: 4px; 
+      font-size: 14px; 
+      transition: all 0.15s;
+      background: #ffffff;
+    }
+    
+    input::placeholder { color: #9aa0a6; }
+    
+    input:focus, select:focus { 
+      outline: none; 
+      border-color: #20c0c0;
+      box-shadow: inset 0 0 0 1px rgba(32, 192, 192, 0.4);
+      background: #f0fffe;
+    }
+    
+    .form-help { 
+      font-size: 12px; 
+      color: #5f6368; 
+      margin-top: 6px;
+    }
+    
+    .verification-box {
+      background: #f8f9fa;
+      border: 1px solid #e8eaed;
+      border-radius: 6px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+    
+    .verification-title{
+      font-size: 13px;
+      font-weight: 600;
+      color: #202124;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .verification-title i{
+      color: #20c0c0;
+      font-size: 15px;
+    }
+    
+    .btn-verify{
+      background: #20c0c0;
+      color: #ffffff;
+      border: none;
+      padding: 11px 24px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      font-family: inherit;
+    }
+    
+    .btn-verify:hover{
+      background: #18a8a8;
+      box-shadow: 0 2px 6px rgba(32, 192, 192, 0.25);
+    }
+    
+    .status-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    
+    .status-pending{
+      background: #fef7e0;
+      color: #9c6c00;
+    }
+    
+    .status-verified{
+      background: #e6f4ea;
+      color: #0d652d;
+    }
+    
+    .biometric-area{
+      border: 2px dashed #dadce0;
+      border-radius: 6px;
+      padding: 36px 24px;
+      text-align: center;
+      cursor: pointer;
+      background: #f8f9fa;
+      margin-top: 16px;
+      transition: all 0.2s;
+    }
+    
+    .biometric-area:hover{
+      border-color: #20c0c0;
+      background: #f0fffe;
+    }
+    
+    .biometric-icon{
+      font-size: 36px;
+      color: #20c0c0;
+      margin-bottom: 12px;
+    }
+    
+    .biometric-text{
+      font-size: 14px;
+      color: #202124;
+      font-weight: 600;
+    }
+    
+    .biometric-subtext{
+      font-size: 12px;
+      color: #5f6368;
+      margin-top: 6px;
+    }
+    
+    .password-strength{
+      margin-top: 8px;
+    }
+    
+    .strength-bar{
+      width: 100%;
+      height: 5px;
+      background: #e8eaed;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    
+    .strength-fill{
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s;
+      border-radius: 3px;
+    }
+    
+    .strength-text{
+      font-size: 12px;
+      font-weight: 600;
+      color: #5f6368;
+    }
+    
+    .strength-fill.weak { background: #d32f2f; }
+    .strength-fill.fair { background: #f57c00; }
+    .strength-fill.good { background: #388e3c; }
+    .strength-fill.strong { background: #0097a7; }
+    
+    .strength-text.weak { color: #d32f2f; }
+    .strength-text.fair { color: #f57c00; }
+    .strength-text.good { color: #388e3c; }
+    .strength-text.strong { color: #0097a7; }
+    
+    .checkbox-group{
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .checkbox-group input{
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      cursor: pointer;
+      flex-shrink: 0;
+      accent-color: #20c0c0;
+    }
+    
+    .checkbox-group label{
+      margin: 0;
+      font-size: 13px;
+      color: #202124;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+    
+    .checkbox-group a{
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .checkbox-group a:hover{
+      text-decoration: underline;
+    }
+    
+    .actions{
+      display: flex;
+      gap: 12px;
+      margin-top: 40px;
+      justify-content: flex-end;
+    }
+    
+    .btn-back{
+      background: transparent;
+      color: #1a73e8;
+      border: 1px solid #dadce0;
+      padding: 11px 28px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    .btn-back:hover{
+      background: #f8f9fa;
+      border-color: #dadce0;
+    }
+    
+    .btn-submit{
+      background: #20c0c0;
+      color: white;
+      border: none;
+      padding: 11px 40px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    .btn-submit:hover{
+      background: #18a8a8;
+      box-shadow: 0 2px 6px rgba(32, 192, 192, 0.25);
+    }
+    
+    .signin-link{
+      text-align: center;
+      margin-top: 28px;
+      font-size: 13px;
+      color: #5f6368;
+    }
+    
+    .signin-link a{
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .modal{
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(32, 33, 36, 0.55);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .modal.active{
+      display: flex;
+    }
+    
+    .modal-content{
+      background: white;
+      border-radius: 12px;
+      padding: 48px 40px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2), 0 24px 38px 3px rgba(0, 0, 0, 0.14);
+      text-align: center;
+    }
+    
+    .success-icon{
+      font-size: 64px;
+      color: #388e3c;
+      margin-bottom: 24px;
+    }
+    
+    .modal-content h2{
+      font-size: 28px;
+      color: #202124;
+      margin-bottom: 12px;
+      font-weight: 400;
+    }
+    
+    .modal-content p{
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    
+    .modal .btn-submit{
+      width: 100%;
+    }
+    
+    @media (max-width: 600px) {
+      .signup-card {
+        padding: 40px 28px;
+      }
+      .logo { font-size: 28px; }
+      .tagline { font-size: 16px; }
+      h1 { font-size: 22px; }
+      .form-row { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; gap: 10px; }
+      .btn-back, .btn-submit { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="map-watermark">
+      <div id="map-container"></div>
+    </div>
+    
+    <div class="content">
+      <div class="signup-wrapper">
+        <div class="signup-card">
+          <div class="header">
+            <div class="logo">SPLITWI$E</div>
+            <div class="motto">Shop Together, Save Together</div>
+            <h1>Create your account</h1>
+            <p class="subtitle">Keep your account secure with verified identity</p>
+          </div>
+          
+          <form id="signupForm">
+            <div class="form-section">
+              <div class="section-title">Basic Information</div>
+              <div class="form-row">
+                <div class="form-group"><label>First name <span class="required">*</span></label><input type="text" id="firstName" placeholder="John" required></div>
+                <div class="form-group"><label>Last name <span class="required">*</span></label><input type="text" id="lastName" placeholder="Doe" required></div>
+              </div>
+              <div class="form-group"><label>Email address <span class="required">*</span></label><input type="email" id="email" placeholder="you@example.com" required><div class="form-help">We'll send you a confirmation link</div></div>
+              <div class="form-group"><label>Phone number <span class="required">*</span></label><input type="tel" id="phone" placeholder="+234 (80) 1234-5678" required><div class="form-help">Nigerian number with country code</div><div class="verification-box"><div class="verification-title"><i class="fas fa-mobile-alt"></i> Phone Verification</div><button type="button" class="btn-verify" onclick="sendOTP()">Send OTP via SMS</button><span class="status-badge status-pending" id="phoneStatus"><i class="fas fa-clock"></i> Pending</span></div></div>
+            </div>
+            
+            <div class="form-section">
+              <div class="section-title">Identity Verification</div>
+              <div class="form-group"><label>National ID Number (NIN) <span class="required">*</span></label><input type="text" id="nin" placeholder="00000000000" maxlength="11" required><div class="form-help">11-digit NIN from NIMC</div></div>
+              <div class="form-group"><label>Date of birth <span class="required">*</span></label><input type="date" id="dob" required></div>
+              <div class="verification-box"><div class="verification-title"><i class="fas fa-id-card"></i> NIN Verification</div><button type="button" class="btn-verify" onclick="verifyNIN()">Verify with NIMC</button><span class="status-badge status-pending" id="ninStatus"><i class="fas fa-clock"></i> Pending</span></div>
+            </div>
+            
+            <div class="form-section">
+              <div class="section-title">Facial Recognition</div>
+              <p style="font-size: 13px; color: #5f6368; margin-bottom: 12px;">Scan your face to verify it matches your NIN photo</p>
+              <div class="biometric-area" onclick="startFacialScan()"><div class="biometric-icon"><i class="fas fa-camera"></i></div><div class="biometric-text">Start facial scan</div><div class="biometric-subtext">Ensure your face is clearly visible</div></div>
+              <div class="verification-box" style="margin-top: 16px;"><span class="status-badge status-pending" id="bioStatus"><i class="fas fa-clock"></i> Pending</span></div>
+            </div>
+            
+            <div class="form-section">
+              <div class="section-title">Security</div>
+              <div class="form-group"><label>Password <span class="required">*</span></label><input type="password" id="password" placeholder="Create a password" required oninput="checkPasswordStrength()"><div class="password-strength"><div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div><div class="strength-text" id="strengthText">Password strength</div></div><div class="form-help">Use 8+ characters with letters, numbers & symbols</div></div>
+              <div class="form-group"><label>Confirm password <span class="required">*</span></label><input type="password" id="confirmPassword" placeholder="Confirm your password" required></div>
+            </div>
+            
+            <div class="form-section">
+              <div class="section-title">Email Verification</div>
+              <button type="button" class="btn-verify" onclick="sendEmailVerification()">Send Verification Email</button>
+              <div class="verification-box" style="margin-top: 16px;"><span class="status-badge status-pending" id="emailStatus"><i class="fas fa-clock"></i> Pending</span></div>
+            </div>
+            
+            <div class="form-section">
+              <div class="checkbox-group"><input type="checkbox" id="terms" required><label for="terms">I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a></label></div>
+              <div class="checkbox-group"><input type="checkbox" id="newsletter"><label for="newsletter">Send me tips and exclusive offers</label></div>
+            </div>
+            
+            <div class="actions">
+              <button type="button" class="btn-back" onclick="window.location.href='index.html'">Back</button>
+              <button type="submit" class="btn-submit">Create account</button>
+            </div>
+            <p class="signin-link">Already have an account? <a href="login.html">Sign in</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal" id="successModal">
+    <div class="modal-content">
+      <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+      <h2>Account created</h2>
+      <p>Your account has been successfully created and verified. You're now ready to start shopping with SPLITWI$E.</p>
+      <button class="btn-submit" onclick="window.location.href='login.html'">Go to sign in</button>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    const map = L.map('map-container', { center: [6.5244, 3.3792], zoom: 13, zoomControl: false, attributionControl: false, scrollWheelZoom: false, dragging: false, touchZoom: false, doubleClickZoom: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 22, maxNativeZoom: 19 }).addTo(map);
+    const users = [ { lat: 6.5244, lng: 3.3792, emoji: '👨‍🦰' }, { lat: 6.5280, lng: 3.3850, emoji: '👩‍🦱' }, { lat: 6.5200, lng: 3.3700, emoji: '👨‍💼' }, { lat: 6.5300, lng: 3.3900, emoji: '👩‍💻' } ];
+    users.forEach(u => { const html = `<div style="font-size: 1.6rem; background: white; border: 2px solid #20c0c0; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(32,192,192,0.25);">${u.emoji}</div>`; L.marker([u.lat, u.lng], { icon: L.divIcon({ html, iconSize: [44, 44] }) }).addTo(map); });
+    function checkPasswordStrength() { const p = document.getElementById('password').value; const f = document.getElementById('strengthFill'); const t = document.getElementById('strengthText'); let s = 0; if(p.length >= 8) s++; if(p.length >= 12) s++; if(/[a-z]/.test(p) && /[A-Z]/.test(p)) s++; if(/\d/.test(p)) s++; if(/[^a-zA-Z\d]/.test(p)) s++; const x = ['Weak', 'Fair', 'Good', 'Strong', 'Very strong']; const c = ['weak', 'fair', 'good', 'strong', 'strong']; f.style.width = (s * 20) + '%'; f.className = 'strength-fill ' + c[s - 1]; t.textContent = x[s - 1]; t.className = 'strength-text ' + c[s - 1]; }
+    function sendOTP() { if(!document.getElementById('phone').value) { alert('Enter phone number'); return; } alert('OTP sent!'); document.getElementById('phoneStatus').innerHTML = '<i class="fas fa-check-circle"></i> Sent'; document.getElementById('phoneStatus').className = 'status-badge status-verified'; }
+    function verifyNIN() { const n = document.getElementById('nin').value; if(n.length !== 11 || !/^\d+$/.test(n)) { alert('NIN must be 11 digits'); return; } alert('Verifying...'); setTimeout(() => { document.getElementById('ninStatus').innerHTML = '<i class="fas fa-check-circle"></i> Verified'; document.getElementById('ninStatus').className = 'status-badge status-verified'; }, 1200); }
+    function startFacialScan() { alert('Starting facial scan...'); setTimeout(() => { document.getElementById('bioStatus').innerHTML = '<i class="fas fa-check-circle"></i> Verified'; document.getElementById('bioStatus').className = 'status-badge status-verified'; }, 1500); }
+    function sendEmailVerification() { if(!document.getElementById('email').value) { alert('Enter email'); return; } alert('Email sent!'); setTimeout(() => { document.getElementById('emailStatus').innerHTML = '<i class="fas fa-check-circle"></i> Verified'; document.getElementById('emailStatus').className = 'status-badge status-verified'; }, 800); }
+    document.getElementById('signupForm').addEventListener('submit', e => { e.preventDefault(); if(document.getElementById('password').value !== document.getElementById('confirmPassword').value) { alert('Passwords do not match'); return; } if(!document.getElementById('terms').checked) { alert('Agree to terms'); return; } document.getElementById('successModal').classList.add('active'); });
+  </script>
+</body>
+</html>
